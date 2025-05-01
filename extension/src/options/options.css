@@ -1,0 +1,435 @@
+/* PLS-Flashcards Review Page Styles */
+
+:root {
+  --primary-color: #6366f1;
+  --primary-light: #818cf8;
+  --primary-dark: #4f46e5;
+  --secondary-color: #10b981;
+  --danger-color: #ef4444;
+  --light-color: #f9fafb;
+  --dark-color: #111827;
+  --gray-color: #e5e7eb;
+  --text-color: #1f2937;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --transition: all 0.2s ease-in-out;
+  --font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--light-color);
+  color: var(--text-color);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: white;
+}
+
+/* Header */
+header {
+  background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+  color: white;
+  padding: 20px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icon-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: var(--transition);
+}
+
+.icon-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.stats-badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Main Content */
+main {
+  flex: 1;
+  padding: 24px;
+}
+
+.review-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  height: calc(100vh - 180px);
+  max-height: 700px;
+}
+
+/* Webcam Panel */
+.webcam-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.webcam-container {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  background-color: #111827;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+}
+
+#webcam, #output-canvas {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Model Status Indicators */
+.model-status {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  z-index: 10;
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+
+#hand-debug-info {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 8px 12px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 10;
+}
+
+/* Rating feedback animation */
+.rating-feedback {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+  animation: pop 0.5s ease-out;
+  z-index: 1000;
+}
+
+@keyframes pop {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.gesture-guide {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 16px;
+  box-shadow: var(--box-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gesture-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.gesture-icon {
+  width: 48px;
+  height: 48px;
+  background-color: var(--light-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+.gesture-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.gesture-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--dark-color);
+}
+
+.gesture-desc {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.review-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.button {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: var(--transition);
+}
+
+.button.primary {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.button.primary:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.button.secondary {
+  background-color: white;
+  color: var(--primary-color);
+  border: 2px solid var(--gray-color);
+}
+
+.button.secondary:hover:not(:disabled) {
+  background-color: var(--light-color);
+  border-color: var(--primary-light);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* Card Panel */
+.card-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.flashcard-review {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  height: 360px;
+  overflow: hidden;
+  position: relative;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.card-front, .card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+  backface-visibility: hidden;
+  transition: transform 0.6s;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-front {
+  transform: rotateY(0deg);
+  background-color: white;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background-color: white;
+}
+
+.card-front.active, .card-back.active {
+  transform: rotateY(0deg);
+}
+
+.flashcard-question {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--dark-color);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 16px;
+}
+
+.flashcard-answer {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: #f8fafc;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--secondary-color);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.card-meta {
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.source-link {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.flip-hint {
+  font-size: 14px;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.manual-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.manual-button {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: var(--transition);
+  color: white;
+}
+
+.manual-button.easy {
+  background-color: var(--secondary-color);
+}
+
+.manual-button.forgot {
+  background-color: var(--primary-color);
+}
+
+.manual-button.hard {
+  background-color: var(--danger-color);
+}
+
+.manual-button:hover {
+  filter: brightness(0.9);
+  transform: translateY(-2px);
+}
+
+.manual-button:active {
+  transform: translateY(1px);
+}
+
+/* Footer */
+footer {
+  padding: 16px 24px;
+  background-color: var(--light-color);
+  border-top: 1px solid var(--gray-color);
+}
+
+.footer-content {
+  font-size: 14px;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .review-layout {
+    max-height: none;
+    height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .review-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .webcam-container, .flashcard-review {
+    height: 300px;
+  }
+  
+  .flashcard-question {
+    font-size: 22px;
+  }
+  
+  .flashcard-answer {
+    font-size: 16px;
+  }
+} 
