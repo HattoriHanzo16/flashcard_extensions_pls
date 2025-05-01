@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLS-Flashcards Review</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <div class="header-content">
+        <h1>PLS-Flashcards Review</h1>
+        <div class="header-actions">
+          <button id="back-to-popup" class="icon-button" title="Back to cards">←</button>
+          <span class="stats-badge" id="stats-badge">0/0 cards reviewed</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="review-layout">
+        <!-- Left panel - Webcam feed -->
+        <div class="webcam-panel">
+          <div id="webcam-container" class="webcam-container">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="output-canvas"></canvas>
+          </div>
+          
+          <div class="gesture-guide">
+            <div class="gesture-item">
+              <div class="gesture-icon">👍</div>
+              <div class="gesture-info">
+                <span class="gesture-name">Easy</span>
+                <span class="gesture-desc">Card was easy to recall</span>
+              </div>
+            </div>
+            <div class="gesture-item">
+              <div class="gesture-icon">✋</div>
+              <div class="gesture-info">
+                <span class="gesture-name">Forgot</span>
+                <span class="gesture-desc">Couldn't recall the answer</span>
+              </div>
+            </div>
+            <div class="gesture-item">
+              <div class="gesture-icon">👎</div>
+              <div class="gesture-info">
+                <span class="gesture-name">Hard</span>
+                <span class="gesture-desc">Difficulty remembering</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="review-controls">
+            <button id="start-review" class="button primary">Start Review</button>
+            <button id="stop-review" class="button secondary" disabled>Stop</button>
+          </div>
+        </div>
+        
+        <!-- Right panel - Flashcard content -->
+        <div class="card-panel">
+          <div id="flashcard-review" class="flashcard-review">
+            <div class="card-front active" id="card-front">
+              <div class="flashcard-question" id="question-text">
+                Most Node.js devs will accuse you of "reinventing the wheel"
+              </div>
+              <div class="card-meta">
+                <div class="source-link" id="source-link">Source: www.linkedin.com</div>
+                <div class="flip-hint">Make a hand gesture or click to flip</div>
+              </div>
+            </div>
+            
+            <div class="card-back" id="card-back">
+              <div class="flashcard-answer" id="answer-text">
+                When you implement functionality that's already available in an existing package, many Node.js developers will criticize this approach as "reinventing the wheel." The community often prefers leveraging existing, well-tested modules rather than creating custom implementations.
+              </div>
+              <div class="card-meta">
+                <div class="flip-hint">Make another gesture to continue</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="manual-controls">
+            <button id="manual-easy" class="manual-button easy">Easy</button>
+            <button id="manual-forgot" class="manual-button forgot">Forgot</button>
+            <button id="manual-hard" class="manual-button hard">Hard</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+    <footer>
+      <div class="footer-content">
+        <p>Use hand gestures to review or keyboard shortcuts: E (Easy), F (Forgot), H (Hard)</p>
+      </div>
+    </footer>
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html> 

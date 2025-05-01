@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLS-Flashcards</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>PLS-Flashcards</h1>
+      <div class="tabs">
+        <button id="browse-tab" class="tab-button active">Browse</button>
+        <button id="review-tab" class="tab-button">Review</button>
+      </div>
+    </header>
+    
+    <main>
+      <!-- Browse Section -->
+      <section id="browse-section" class="active">
+        <div id="flashcard-list" class="flashcard-list">
+          <!-- Empty state (will be shown when no cards are present) -->
+          <div class="empty-state" style="display: none;">
+            <p>No flashcards yet. Highlight text on any webpage and right-click to save.</p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Review Section -->
+      <section id="review-section">
+        <div id="review-container" class="review-container">
+          <!-- Webcam container -->
+          <div id="webcam-container">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="output-canvas"></canvas>
+          </div>
+          
+          <!-- Flashcard content area -->
+          <div id="flashcard-review" class="flashcard-review">
+            <div class="flashcard-content">
+              <div class="flashcard-question">
+                <!-- Question will be loaded dynamically -->
+              </div>
+            </div>
+            
+            <!-- Gesture guide -->
+            <div class="gesture-guide">
+              <div class="gesture">
+                <div class="emoji">👍</div>
+                <span class="label">Easy</span>
+              </div>
+              <div class="gesture">
+                <div class="emoji">✋</div>
+                <span class="label">Forgot</span>
+              </div>
+              <div class="gesture">
+                <div class="emoji">👎</div>
+                <span class="label">Hard</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Rating buttons -->
+          <div class="rating-buttons">
+            <button id="easy-button" class="rating-button easy">Easy</button>
+            <button id="forgot-button" class="rating-button forgot">Forgot</button>
+            <button id="hard-button" class="rating-button hard">Hard</button>
+          </div>
+          
+          <div class="review-controls">
+            <button id="start-review" class="button primary">Start Review</button>
+            <button id="stop-review" class="button secondary" disabled>Stop</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer>
+      <div class="status">
+        <span id="card-count">0 cards</span>
+      </div>
+      <div class="actions">
+        <button id="clear-button" class="icon-button" title="Clear all flashcards">🗑️</button>
+        <button id="sync-button" class="icon-button" title="Sync with server">🔄</button>
+      </div>
+    </footer>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 
