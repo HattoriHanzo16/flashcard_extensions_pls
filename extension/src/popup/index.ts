@@ -257,6 +257,9 @@ const renderFlashcardList = (): void => {
       reviewDateStr = `<span style="color: #94a3b8; font-size: 11px; margin-left: 6px;">(${reviewDate.toLocaleDateString()})</span>`;
     }
     
+    // MongoDB returns _id instead of id - handle both cases
+    const cardId = card.id || (card as any)._id;
+    
     cardEl.innerHTML = `
       <div class="flashcard-header">
         <div class="review-status ${reviewClass}">${reviewEmoji} ${reviewStatus}</div>
@@ -269,7 +272,7 @@ const renderFlashcardList = (): void => {
       <div class="flashcard-footer">
         <a href="${card.source}" target="_blank" class="source-link" title="${card.source}">${hostname}</a>
         <div class="actions">
-          <button class="delete-button" data-id="${card.id}">🗑️</button>
+          <button class="delete-button" data-id="${cardId}">🗑️</button>
         </div>
       </div>
     `;
@@ -293,18 +296,32 @@ const renderFlashcardList = (): void => {
     if (deleteButton) {
       deleteButton.addEventListener('click', async (e) => {
         e.stopPropagation();
+        e.preventDefault();
         const id = deleteButton.getAttribute('data-id');
         if (id) {
           try {
+            console.log(`Deleting flashcard with ID: ${id}`);
             const response = await fetch(`${API_BASE_URL}/flashcards/${id}`, {
-              method: 'DELETE'
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              }
             });
             
             if (response.ok) {
+              console.log(`Successfully deleted flashcard with ID: ${id}`);
+              // Remove the card from the DOM directly for immediate feedback
+              const cardElement = deleteButton.closest('.flashcard-item');
+              if (cardElement && cardElement.parentNode) {
+                cardElement.parentNode.removeChild(cardElement);
+              }
+              // Then refresh the list
               loadFlashcards();
+            } else {
+              console.error(`Failed to delete flashcard with ID: ${id}`, await response.text());
             }
           } catch (error) {
-            // Silently fail
+            console.error(`Error deleting flashcard with ID: ${id}`, error);
           }
         }
       });

@@ -1067,6 +1067,13 @@ async function detectGestures(): Promise<void> {
   if (!isReviewing || !isDetectingGestures || !handposeModel) return;
   
   try {
+    // Check if webcam element has a valid size
+    if (!webcamEl || webcamEl.videoWidth === 0 || webcamEl.videoHeight === 0) {
+      // Wait for valid video dimensions before proceeding
+      requestAnimationFrame(detectGestures);
+      return;
+    }
+    
     const predictions = await handposeModel.estimateHands(webcamEl);
     
     if (predictions.length > 0) {

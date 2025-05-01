@@ -5,14 +5,35 @@ const contentScriptLoaded = new Map<number, boolean>();
 
 // Create a context menu item for saving selected text as flashcards
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.remove('saveAsFlashcard', () => {
+  // Wait for context menus API to be ready
+  setTimeout(() => {
+    // Check if menu already exists first
+    chrome.contextMenus.update('saveAsFlashcard', {}, () => {
+      // If there's an error, the menu doesn't exist, so create it
+      if (chrome.runtime.lastError) {
+        createSaveAsFlashcardMenu();
+      }
+    });
+  }, 100);
+});
+
+// Helper function to create the save as flashcard menu
+function createSaveAsFlashcardMenu() {
+  try {
     chrome.contextMenus.create({
       id: 'saveAsFlashcard',
       title: 'Save as Flashcard',
       contexts: ['selection']
+    }, () => {
+      // Handle any errors during creation
+      if (chrome.runtime.lastError) {
+        console.error('Error creating context menu:', chrome.runtime.lastError);
+      }
     });
-  });
-});
+  } catch (error) {
+    console.error('Exception creating context menu:', error);
+  }
+}
 
 // Reset loaded status when tab is updated
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -92,12 +113,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   
   if (message.action === 'createContextMenu') {
     try {
+      // First check if menu exists before trying to remove it
       chrome.contextMenus.remove(message.data.id, () => {
-        chrome.contextMenus.create(message.data);
-        sendResponse({ status: 'success' });
+        // Ignore any lastError from removal attempt
+        const lastError = chrome.runtime.lastError;
+        
+        // Create the menu item with error handling
+        try {
+          chrome.contextMenus.create(message.data, () => {
+            if (chrome.runtime.lastError) {
+              sendResponse({ status: 'error', message: chrome.runtime.lastError.message });
+            } else {
+              sendResponse({ status: 'success' });
+            }
+          });
+        } catch (createError) {
+          sendResponse({ status: 'error', message: createError });
+        }
       });
     } catch (error) {
-      sendResponse({ status: 'error', message: error });
+      // If remove failed, just try to create directly
+      try {
+        chrome.contextMenus.create(message.data, () => {
+          if (chrome.runtime.lastError) {
+            sendResponse({ status: 'error', message: chrome.runtime.lastError.message });
+          } else {
+            sendResponse({ status: 'success' });
+          }
+        });
+      } catch (fallbackError) {
+        sendResponse({ status: 'error', message: fallbackError });
+      }
     }
     return true;
   } else if (message.action === 'showNotification') {
@@ -182,6 +228,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === 'saveAsFlashcard' && tab?.id) {
     const tabId = tab.id;
     
+    // Verify valid tab URL
     if (!tab.url || 
         tab.url === 'undefined' || 
         tab.url.startsWith('chrome://') || 
