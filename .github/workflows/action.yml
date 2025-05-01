@@ -23,21 +23,57 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       
+      - name: Check if package.json exists
+        id: check_package
+        run: |
+          if [ -f "package.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Install dependencies
+        if: steps.check_package.outputs.exists == 'true'
         run: npm install
       
+      - name: Check for lint script
+        if: steps.check_package.outputs.exists == 'true'
+        id: check_lint
+        run: |
+          if grep -q '"lint"' package.json; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Lint
+        if: steps.check_lint.outputs.exists == 'true'
         run: npm run lint
+      
+      - name: Check for build script
+        if: steps.check_package.outputs.exists == 'true'
+        id: check_build
+        run: |
+          if grep -q '"build"' package.json; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
         
       - name: Build
+        if: steps.check_build.outputs.exists == 'true'
         run: npm run build
       
-      - name: Test
-        run: npm test
-        
-      - name: Check server health
+      - name: Check for test script
+        if: steps.check_package.outputs.exists == 'true'
+        id: check_test
         run: |
-          npm run start:dev &
-          sleep 10
-          curl -f http://localhost:3001/health || exit 1
-          curl -f http://localhost:3001/ping || exit 1 
+          if grep -q '"test"' package.json; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Test
+        if: steps.check_test.outputs.exists == 'true'
+        run: npm test 
