@@ -1,0 +1,44 @@
+name: TypeScript Express CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Lint
+        run: npm run lint
+        
+      - name: Build
+        run: npm run build
+      
+      - name: Test
+        run: npm test
+        
+      - name: Check server health
+        run: |
+          npm run start:dev &
+          sleep 10
+          curl -f http://localhost:3001/health || exit 1
+          curl -f http://localhost:3001/ping || exit 1 
